@@ -1,23 +1,24 @@
-## Advanced Functions & Closures
+## Funções Avançadas & Encerramentos
 
-Finally, let’s discuss some advanced features related to functions and
-closures: function pointers, diverging functions, and returning closures.
+Finalmente, vamos discutir alguns recursos avançados relacionados com as funções e
+encerramentos: ponteiros de funções, funções divergentes e enceramentos de retorno.
 
-### Function Pointers
 
-<!-- Maybe give an example of when we'd want to use this? -->
-<!-- Added a short sentence, but we discuss interfacing with languages that
-don't have closures below, which I don't think makes sense until we define how
-function pointers are different than closures... /Carol -->
+### Ponteiros de Funções
 
-We’ve talked about how to pass closures to functions; you can also pass regular
-functions to functions! This is useful when we want to pass a function we’ve
-already defined rather than defining a new closure. We do this using function
-pointers to allow us to use functions as arguments to other functions.
-Functions coerce to the type `fn`, with a lower case ‘f’ not to be confused
-with the `Fn` closure trait. The `fn` type is called a *function pointer*. The
-syntax for specifying that a parameter is a function pointer is similar to that
-of closures, as shown in Listing 19-35:
+<!-- Talvez dê um exemplo de quando gostaríamos de usar isto? -->
+<!-- Adicionar uma breve frase, mas nós discutimos a interface com idiomas que
+não tenham encerramentos abaixo, o que eu acho que não faz sentido até que nós definirmos como
+os ponteiros de função são diferentes dos encerramentos... /Carol -->
+
+Nós conversamos sobre como passar os encerramentos para funções; tu também podes passar
+funções reulares para funções! Isto é útil quando queremos passar uma função que temos
+já definida em vez de definir um novo encerramento. Fazemos isto usando a função
+ponteiros para nos permitir usar funções como argumentos para outras funções.
+Funções forçem para o tipo `fn`, com uma minúscula ‘f’ para não confundir
+com o traço de enceramento `Fn`. O tipo `fn` é chamado de *ponteiro de função*. A
+sintaxe para especificar que um parâmetro é um ponteiro de função é semelhante à
+de encerramentos, como mostrado na Listagem 19-35:
 
 <span class="filename">Filename: src/main.rs</span>
 
@@ -37,31 +38,31 @@ fn main() {
 }
 ```
 
-<span class="caption">Listing 19-35: Using the `fn` type to accept a function
-pointer as an argument</span>
+<span class="caption">Listagem 19-35: Usando o tipo `fn` para aceitar uma função
+ponteiro como argumento</span>
 
-This prints `The answer is: 12`. We specify that the parameter `f` in
-`do_twice` is an `fn` that takes one parameter of type `i32` and returns an
-`i32`. We can then call `f` in the body of `do_twice`. In `main`, we can pass
-the function name `add_one` as the first argument to `do_twice`.
+Isto imprime `A resposta é: 12`. Especificamos que o parâmetro `f` no
+`do_twice` é um `fn` que leva um parâmetro do tipo `i32` e retorna um
+`i32'. Podemos chamar `f` no corpo de `do_twice`. Em `main`, podemos passar
+o nome da função `add_one` como o primeiro argumento para `do_twice`.
 
-Unlike closures, `fn` is a type rather than a trait, so we specify `fn` as the
-parameter type directly, rather than declaring a generic type parameter with
-one of the `Fn` traits as a trait bound.
+Ao contrário dos fechos, `fn` é um tipo e não uma característica, então especificamos `fn` como o
+tipo de parâmetro diretamente, em vez de declarar um parâmetro de tipo genérico com
+um dos traços `Fn` como um atalho de traço.
 
-Function pointers implement all three of the closure traits (`Fn`, `FnMut`, and
-`FnOnce`), so we can always pass a function pointer as an argument for a
-function that expects a closure. Prefer to write functions using a generic type
-and one of the closure traits, so that your functions can accept either
-functions or closures.
+Os ponteiros de função implementam os três traços de fecho (`Fn`,` FnMut` e
+`FnOnce`), para que possamos sempre passar um ponteiro de função como um argumento para uma
+função que espera um encerramento. Prefere escrever funções usando um tipo genérico
+e um dos traços do encerramento, para que as suas funções possam aceitar
+funções ou encerramentos.
 
-An example of a case where you’d want to only accept `fn` and not closures is
-when interfacing with external code that doesn’t have closures: C functions can
-accept functions as arguments, but C doesn’t have closures.
+Um exemplo de um caso em que tu queres aceitar apenas `fn` e não encerramentos é
+quando interagindo com o código externo que não possui encerramentos: funções C podem
+aceitar funções como argumentos, mas C não possui encerramentos.
 
-For an example where we can use either a closure defined inline or a named
-function, let’s look at a use of `map`. To use the `map` function to turn a
-vector of numbers into a vector of strings, we could use a closure:
+Para um exemplo em que podemos usar um encerramento definido em linha ou uma função
+nomeada, vejamos um uso de `map`. Para usar a função `map` para transformar um
+vetor de números num vetor de cordas, poderíamos usar um encerramento:
 
 ```rust
 let list_of_numbers = vec![1, 2, 3];
@@ -71,7 +72,7 @@ let list_of_strings: Vec<String> = list_of_numbers
     .collect();
 ```
 
-Or we could name a function as the argument to `map` instead of the closure:
+Ou podemos nomear uma função como o argumento para `map` em vez do encerramento:
 
 ```rust
 let list_of_numbers = vec![1, 2, 3];
@@ -81,25 +82,25 @@ let list_of_strings: Vec<String> = list_of_numbers
     .collect();
 ```
 
-Note that we do have to use the fully qualified syntax that we talked about in
-the “Advanced Traits” section because there are multiple functions available
-named `to_string`; here, we’re using the `to_string` function defined in the
-`ToString` trait, which the standard library has implemented for any type that
-implements `Display`.
+Observa que precisamos de usar a sintaxe totalmente qualificada que falamos na
+seção “Traços Avançados” porque existem várias funções disponíveis
+chamado `to_string`; aqui, estamos a usar a função `to_string` definida na
+tração `ToString`, que a biblioteca padrão implementou para qualquer tipo que
+implementa o `Display`.
 
-Some people prefer this style, some people prefer to use closures. They end up
-with the same code, so use whichever feels more clear to you.
+Algumas pessoas preferem este estilo, algumas pessoas preferem usar encerramentos. Acabam
+com o mesmo código, então usa o que achas mais claro para ti.
 
-### Returning Closures
+### Encerramentos de Retorno
 
-Closures are represented by traits, which means we can’t return closures
-directly. In most cases where we may want to return a trait, we can instead use
-the concrete type that implements the trait as the return value of the
-function. We can’t do that with closures, though, because they don’t have a
-concrete type that’s returnable; we’re not allowed to use the function pointer
-`fn` as a return type, for example.
+Os encerramentos são representados por traços, o que significa que não podemos retornar encerramentos
+diretamente. Na maioria dos casos em que podemos querer retornar uma característica, podemos usar
+o tipo de concreto que implementa o traço como o valor de retorno da
+função. Nós não podemos fazer isto com encerramentos, no entanto, como eles não têm um
+tipo de concreto que é retornável; não podemos usar o ponteiro da função
+`fn` como um tipo de retorno, por exemplo.
 
-This code that tries to return a closure directly won’t compile:
+Este código que tenta retornar um encerramento diretamente não compilará:
 
 ```rust,ignore
 fn returns_closure() -> Fn(i32) -> i32 {
@@ -107,7 +108,7 @@ fn returns_closure() -> Fn(i32) -> i32 {
 }
 ```
 
-The compiler error is:
+O erro do compilador é:
 
 ```text
 error[E0277]: the trait bound `std::ops::Fn(i32) -> i32 + 'static:
@@ -123,9 +124,9 @@ std::marker::Sized` is not satisfied
   = note: the return type of a function must have a statically known size
 ```
 
-Our error references the `Sized` trait again! Rust doesn’t know how much space
-it will need to store the closure. We saw a solution to this in the previous
-section: we can use a trait object:
+O nosso erro faz referência ao traço `Sized` novamente! O Rust não sabe quanto espaço
+ele precisará para armazenar o encerramento. Nós vimos uma solução para isto na seção
+anterior: podemos usar um objeto de traço:
 
 ```rust
 fn returns_closure() -> Box<Fn(i32) -> i32> {
@@ -133,17 +134,17 @@ fn returns_closure() -> Box<Fn(i32) -> i32> {
 }
 ```
 
-This code will compile just fine. For more about trait objects, refer back to
-the “Trait Objects” section in Chapter 17.
+Este código irá compilar muito bem. Para mais informações sobre objetos de traços, consulta
+a seção “Objetos de Traço” no Capítulo 17.
 
-## Summary
+## Resumo
 
-Whew! Now we’ve gone over features of Rust that aren’t used often, but are
-available if you need them in very particular circumstances. We’ve introduced a
-lot of complex topics so that, when you encounter them in error message
-suggestions or in others’ code, you’ll at least have seen these concepts and
-syntax once before. You can use this chapter as a reference to guide you to
-your solutions.
+Whew! Agora, examinamos as características do Rust que não são usadas com freqüência, mas estão
+disponíveis se tu precisares delas em circunstâncias muito específicas. Introduzimos
+muitos tópicos complexos para que, quando tu os encontrares em mensagem de erro,
+sugestões ou em outros códigos, pelo menos terás visto estes conceitos e
+sintaxe anteriormente. Tu podes usar este capítulo como uma referência para te orientar para
+as tuas soluções.
 
-Now, let’s put everything we’ve learned throughout the book into practice with
-one more project!
+Agora, vamos colcar tudo o que aprendemos ao longo do livro com
+mais um projeto!
